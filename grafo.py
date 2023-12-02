@@ -46,9 +46,7 @@ class Grafo:
         lista = self.lista_de_adjacencia
         return max(len(grau) for grau in lista.values())
 
-    def bfs(self, vertice):
-        # retornar a lista de vértices e a distância dele para cada
-        # retornar o pai de cada um desses vértices     
+    def bfs(self, vertice):   
         visitados = set()
         visitados.add(vertice)
         vertices = [vertice]
@@ -80,30 +78,39 @@ class Grafo:
         visitados.add(vertice)
         vertices = [vertice]
         pais = [vertice]
-        t_inicial = [0]
+        t_inicial, n = [1], 1
         t_final = []
         
         pilha = LifoQueue()
-        pilha.put(vertice)
                        
         for i in self.lista_de_adjacencia[vertice]:
-            pilha.put(i)
+            pilha.put(i[0])
                 
         while not pilha.empty():
             v = pilha.get()     
-             
-            for i in self.lista_de_adjacencia[v]:
-                pilha.put(i)
             
-            for i in range(len(self.lista_de_adjacencia[v])):
-                u = self.lista_de_adjacencia[vertice][i][0]
-                pilha.put(u)
-                if u not in visitados:
-                    print(u)
-                    visitados.add(u)
-
+            if v not in visitados:
+                visitados.add(v)
+                vertices.append(v)
+                
+                n = n + 1
+                t_inicial.append(n)
+                
+                for i in self.lista_de_adjacencia[v]:
+                    pilha.put(i[0])
+                    
+            if len(vertices) == self.numeroDeVertices():
+                n = n + 1
+                t_final.append(n)
+            
+        for i in range(len(vertices) - 1):
+            n = n + 1
+            pais.append(vertices[i])
+            t_final.insert(0, n)
         
-        return visitados
+        t_final.insert(0, n + 1)
+        
+        return vertices, pais, t_inicial, t_final
                 
 
 
